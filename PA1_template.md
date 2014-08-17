@@ -9,10 +9,9 @@ To use this R Markdown document, you will need to have the lattice and latticeEx
 
 First, we shall load the data into R. The dataset is contained in a comma-separated value Excel File.
 
-```{r}
 
+```r
 data = read.csv("activity.csv", stringsAsFactors=FALSE)
-
 ```
 
 ### Histogram of Steps Taken
@@ -20,8 +19,8 @@ data = read.csv("activity.csv", stringsAsFactors=FALSE)
 The data is not meaningful without a graphical representation. We shall take a look at the distribution of the total number of steps taken for this individual. NA values are ignored.
   
 
-```{r}
 
+```r
 sum_1 = data.frame()
 dates = unique(data$date)
 
@@ -37,12 +36,39 @@ for (i in seq(dates)) {
 colnames(sum_1) = "total"
 total_sum_1 = cbind(dates, sum_1)
 summary(total_sum_1)
+```
 
+```
+##         dates        total      
+##  2012-10-01: 1   Min.   :    0  
+##  2012-10-02: 1   1st Qu.: 6778  
+##  2012-10-03: 1   Median :10395  
+##  2012-10-04: 1   Mean   : 9354  
+##  2012-10-05: 1   3rd Qu.:12811  
+##  2012-10-06: 1   Max.   :21194  
+##  (Other)   :55
+```
+
+```r
 hist(total_sum_1$total, col="blue", main = "From October to November 2012", xlab="Total Number of Steps Taken")
+```
 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+
+```r
 summary(total_sum_1)
+```
 
-```  
+```
+##         dates        total      
+##  2012-10-01: 1   Min.   :    0  
+##  2012-10-02: 1   1st Qu.: 6778  
+##  2012-10-03: 1   Median :10395  
+##  2012-10-04: 1   Mean   : 9354  
+##  2012-10-05: 1   3rd Qu.:12811  
+##  2012-10-06: 1   Max.   :21194  
+##  (Other)   :55
+```
 
   
 Just to get an idea of how long a step is, here is a brief reference on an online site.
@@ -64,8 +90,8 @@ However, the histogram paints only an accurate picture of the steps taken, but n
 
 A sample output of the data table used is provided below:
 
-```{r}
 
+```r
 average_1 = data.frame()
 
 for (i in unique(data$interval)) {
@@ -80,20 +106,30 @@ colnames(average_1) = "average"
 intervals = unique(data$interval)
 average_final = cbind(intervals, average_1)
 print(head(average_final))
+```
 
+```
+##   intervals average
+## 1         0 1.71698
+## 2         5 0.33962
+## 3        10 0.13208
+## 4        15 0.15094
+## 5        20 0.07547
+## 6        25 2.09434
 ```
 
 
 The time series plot is as below:
 
-```{r}
 
+```r
 plot(average_final$intervals, average_final$average, type = "l", col = "red", xlab = "Intervals in a Day (per 5 minute)", ylab = "Average Daily Steps")
 max_step = max(average_final$average)
 max_interval = with(average_final, intervals[average==max_step])
 text(max_interval, max_step, labels = "835, 206.17")
-
 ```
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
 
 From the time series, we can see the interval that has the maximum number of average steps is the 835th minute, or 8:35am. Hence, we can see that the individual is the most active at 8.35am in his average daily pattern.
 
@@ -101,17 +137,22 @@ From the time series, we can see the interval that has the maximum number of ave
 
 Per the Assignment, we will look into replacing missing values. We need to know how many NAs are there in the data first.
 
-```{r}
 
+```r
 table(is.na(data))
+```
 
+```
+## 
+## FALSE  TRUE 
+## 50400  2304
 ```
 
 We can see that there are 2304 NA values (where every NA value to be counted is a sum of 1, and every non NA value to be a sum of 0) in the data set. For the purposes of the Assignment, I shall use only the mean of each interval to fill in for the missing values in the original dataset. A sample output of the replaced values is provided below.
 
 
-```{r}
 
+```r
 refreshed_data = data.frame()
 
 for (i in unique(data$interval)) {
@@ -124,15 +165,33 @@ for (i in unique(data$interval)) {
 }
 
 print(head(refreshed_data))
+```
 
+```
+##       steps       date interval
+## 1     1.717 2012-10-01        0
+## 289   0.000 2012-10-02        0
+## 577   0.000 2012-10-03        0
+## 865  47.000 2012-10-04        0
+## 1153  0.000 2012-10-05        0
+## 1441  0.000 2012-10-06        0
 ```
 
 As compared to the previous table,
 
-```{r}
 
+```r
 print(head(average_final))
+```
 
+```
+##   intervals average
+## 1         0 1.71698
+## 2         5 0.33962
+## 3        10 0.13208
+## 4        15 0.15094
+## 5        20 0.07547
+## 6        25 2.09434
 ```
 
 We can see that the NA values in the refreshed dataset has been replaced with the average value, eg. at interval 0, the average value of 1.717 has been slotted into the NA value.
@@ -140,8 +199,8 @@ We can see that the NA values in the refreshed dataset has been replaced with th
 
 Next, we will have to look at the impact of these newly inserted values into the original data set, which is conveniently named as "refreshed_data" to set the difference. We will conduct a histogram analysis, where we will see the average number of steps taken per day, at every interval. A sample output is given below.
 
-```{r}
 
+```r
 sum_2 = data.frame()
 dates = unique(refreshed_data$date)
 
@@ -157,16 +216,27 @@ for (i in seq(dates)) {
 colnames(sum_2) = "total"
 total_sum_2 = cbind(dates, sum_2)
 summary(total_sum_2)
+```
 
+```
+##         dates        total      
+##  2012-10-01: 1   Min.   :   41  
+##  2012-10-02: 1   1st Qu.: 9819  
+##  2012-10-03: 1   Median :10766  
+##  2012-10-04: 1   Mean   :10766  
+##  2012-10-05: 1   3rd Qu.:12811  
+##  2012-10-06: 1   Max.   :21194  
+##  (Other)   :55
 ```
 
 The following is the histogram:
 
-```{r}
 
+```r
 hist(total_sum_2$total, col="blue", main = "From October to November 2012", xlab="Total Number of Steps Taken")
-
 ```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.png) 
 
 The average total number of steps in this case is 10766, while the median total number of steps in this case is also 10766.
 
@@ -180,8 +250,8 @@ For this discrepancy, we needed more accurate data. For accurate data to be take
 
 Next, we will look at any difference between the weekday data subset and the weekend data subset.
 
-```{r}
 
+```r
 ## Identify the date in the data first. refreshed_data is used.
 
 refreshed_data$date = as.Date(refreshed_data$date)
@@ -243,11 +313,17 @@ by_week = rbind(weekday, weekend)
 library(lattice)
 a = xyplot(weekday$average ~ weekday$intervals|"Weekday", type = "l", ylab = "Number of Steps", xlab = "Intervals")
 print(a)
+```
+
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-101.png) 
+
+```r
 b = xyplot(weekend$average ~ weekend$intervals|"Weekend",type = "l", ylab = "Number of Steps", xlab = "Intervals")
 library(latticeExtra)
 c(a,b, x.same=TRUE, y.same=FALSE, layout = c(1,2))
-
 ```
+
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-102.png) 
 
 We can see that there is higher activity distributed among the intervals for weekends, in contrast to for weekdays.
 
